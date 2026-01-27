@@ -10,6 +10,7 @@ from search import (
     get_all_categories
 )
 from converter import scale_recipe, convert_unit
+from shopping import generate_shopping_list, format_shopping_list
 
 
 def display_recipe(recipe):
@@ -297,6 +298,45 @@ def edit_recipe_menu():
         print("Invalid input.")
 
 
+def shopping_list_menu():
+    """Generate a shopping list from selected recipes."""
+    recipes = load_recipes()
+    if not recipes:
+        print("No recipes in the book yet!")
+        return
+
+    print("\n--- Generate Shopping List ---")
+    display_recipe_list(recipes)
+
+    print("\nEnter recipe numbers to include (comma-separated)")
+    print("Example: 1, 2, 3")
+    selection = input("\nRecipes: ").strip()
+
+    if not selection:
+        print("No recipes selected.")
+        return
+
+    # Parse selection
+    selected_names = []
+    try:
+        indices = [int(x.strip()) for x in selection.split(",")]
+        for idx in indices:
+            if 0 < idx <= len(recipes):
+                selected_names.append(recipes[idx - 1].name)
+    except ValueError:
+        print("Invalid input. Please enter numbers separated by commas.")
+        return
+
+    if not selected_names:
+        print("No valid recipes selected.")
+        return
+
+    print(f"\nGenerating shopping list for: {', '.join(selected_names)}")
+
+    shopping = generate_shopping_list(selected_names)
+    print(format_shopping_list(shopping))
+
+
 def main():
     """Main application loop."""
     print("\n" + "=" * 50)
@@ -313,7 +353,8 @@ def main():
         print("6. Unit converter")
         print("7. Edit a recipe")
         print("8. Delete a recipe")
-        print("9. Exit")
+        print("9. Shopping list")
+        print("0. Exit")
 
         choice = input("\nChoice: ").strip()
 
@@ -339,6 +380,8 @@ def main():
             else:
                 print(f"Recipe '{name}' not found.")
         elif choice == "9":
+            shopping_list_menu()
+        elif choice == "0":
             print("\nGoodbye! Happy cooking!\n")
             break
         else:
