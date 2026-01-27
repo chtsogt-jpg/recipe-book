@@ -1,1 +1,79 @@
-[]
+[
+  {
+    "name": "Classic Pancakes",
+    "ingredients": [
+      {"amount": 1.5, "unit": "cups", "item": "all-purpose flour"},
+      {"amount": 3.5, "unit": "tsp", "item": "baking powder"},
+      {"amount": 1, "unit": "tbsp", "item": "sugar"},
+      {"amount": 1.25, "unit": "cups", "item": "milk"},
+      {"amount": 1, "unit": "", "item": "egg"},
+      {"amount": 3, "unit": "tbsp", "item": "melted butter"}
+    ],
+    "instructions": [
+      "Mix flour, baking powder, and sugar in a large bowl.",
+      "Make a well in the center and add milk, egg, and melted butter.",
+      "Whisk until smooth (a few lumps are okay).",
+      "Heat a griddle over medium heat and lightly grease.",
+      "Pour 1/4 cup batter per pancake onto the griddle.",
+      "Cook until bubbles form on surface, then flip and cook until golden."
+    ],
+    "prep_time": 10,
+    "cook_time": 15,
+    "servings": 4,
+    "category": "breakfast"
+  },
+  {
+    "name": "Simple Tomato Pasta",
+    "ingredients": [
+      {"amount": 1, "unit": "lb", "item": "spaghetti"},
+      {"amount": 2, "unit": "tbsp", "item": "olive oil"},
+      {"amount": 4, "unit": "cloves", "item": "garlic, minced"},
+      {"amount": 28, "unit": "oz", "item": "crushed tomatoes"},
+      {"amount": 1, "unit": "tsp", "item": "salt"},
+      {"amount": 0.5, "unit": "tsp", "item": "black pepper"},
+      {"amount": 0.25, "unit": "cup", "item": "fresh basil, chopped"}
+    ],
+    "instructions": [
+      "Cook pasta according to package directions. Reserve 1 cup pasta water.",
+      "Heat olive oil in a large pan over medium heat.",
+      "Add garlic and cook for 30 seconds until fragrant.",
+      "Add crushed tomatoes, salt, and pepper. Simmer for 15 minutes.",
+      "Drain pasta and add to the sauce. Toss to combine.",
+      "Add pasta water as needed to loosen the sauce.",
+      "Top with fresh basil and serve."
+    ],
+    "prep_time": 10,
+    "cook_time": 25,
+    "servings": 6,
+    "category": "dinner"
+  },
+  {
+    "name": "Chocolate Chip Cookies",
+    "ingredients": [
+      {"amount": 2.25, "unit": "cups", "item": "all-purpose flour"},
+      {"amount": 1, "unit": "tsp", "item": "baking soda"},
+      {"amount": 1, "unit": "tsp", "item": "salt"},
+      {"amount": 1, "unit": "cup", "item": "butter, softened"},
+      {"amount": 0.75, "unit": "cup", "item": "sugar"},
+      {"amount": 0.75, "unit": "cup", "item": "brown sugar"},
+      {"amount": 2, "unit": "", "item": "eggs"},
+      {"amount": 1, "unit": "tsp", "item": "vanilla extract"},
+      {"amount": 2, "unit": "cups", "item": "chocolate chips"}
+    ],
+    "instructions": [
+      "Preheat oven to 375°F (190°C).",
+      "Mix flour, baking soda, and salt in a bowl. Set aside.",
+      "Beat butter and sugars until creamy.",
+      "Add eggs and vanilla to butter mixture. Beat well.",
+      "Gradually blend in flour mixture.",
+      "Stir in chocolate chips.",
+      "Drop rounded tablespoons onto ungreased baking sheets.",
+      "Bake for 9-11 minutes or until golden brown.",
+      "Cool on baking sheet for 2 minutes, then transfer to wire rack."
+    ],
+    "prep_time": 15,
+    "cook_time": 11,
+    "servings": 48,
+    "category": "dessert"
+  }
+]
