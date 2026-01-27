@@ -47,3 +47,24 @@ def delete_recipe(name):
         save_recipes(recipes)
         return True
     return False
+
+
+def update_recipe(old_name, updated_recipe):
+    """Update an existing recipe. Returns True if updated, False if not found."""
+    recipes = load_recipes()
+
+    for i, recipe in enumerate(recipes):
+        if recipe.name.lower() == old_name.lower():
+            recipes[i] = updated_recipe
+            save_recipes(recipes)
+            return True
+    return False
+
+
+def get_recipe_by_name(name):
+    """Get a single recipe by name. Returns None if not found."""
+    recipes = load_recipes()
+    for recipe in recipes:
+        if recipe.name.lower() == name.lower():
+            return recipe
+    return None

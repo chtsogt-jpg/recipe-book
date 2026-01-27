@@ -1,7 +1,7 @@
 """Recipe Book - Main CLI interface."""
 
 from recipe import Recipe
-from storage import load_recipes, add_recipe, delete_recipe, save_recipes
+from storage import load_recipes, add_recipe, delete_recipe, save_recipes, update_recipe
 from search import (
     search_by_name,
     search_by_ingredient,
@@ -204,6 +204,99 @@ def unit_converter_menu():
         print("Invalid amount.")
 
 
+def edit_recipe_menu():
+    """Edit an existing recipe."""
+    recipes = load_recipes()
+    if not recipes:
+        print("No recipes in the book yet!")
+        return
+
+    display_recipe_list(recipes)
+
+    try:
+        choice = int(get_input("\nEnter recipe number to edit (0 to cancel): "))
+        if choice == 0:
+            return
+        if not (0 < choice <= len(recipes)):
+            print("Invalid choice.")
+            return
+
+        recipe = recipes[choice - 1]
+        old_name = recipe.name
+
+        print(f"\n--- Editing: {recipe.name} ---")
+        print("(Press Enter to keep current value)\n")
+
+        # Get updated values
+        new_name = input(f"Name [{recipe.name}]: ").strip() or recipe.name
+        new_category = input(f"Category [{recipe.category}]: ").strip() or recipe.category
+
+        prep_input = input(f"Prep time [{recipe.prep_time}]: ").strip()
+        new_prep = int(prep_input) if prep_input else recipe.prep_time
+
+        cook_input = input(f"Cook time [{recipe.cook_time}]: ").strip()
+        new_cook = int(cook_input) if cook_input else recipe.cook_time
+
+        servings_input = input(f"Servings [{recipe.servings}]: ").strip()
+        new_servings = int(servings_input) if servings_input else recipe.servings
+
+        # Ask about ingredients
+        print(f"\nCurrent ingredients: {len(recipe.ingredients)}")
+        edit_ing = input("Edit ingredients? (y/n): ").strip().lower()
+
+        if edit_ing == 'y':
+            print("\nEnter new ingredients (format: 'amount unit item')")
+            print("Type 'done' when finished.\n")
+            new_ingredients = []
+            while True:
+                ing_input = input("Ingredient: ").strip()
+                if ing_input.lower() == 'done':
+                    break
+                if ing_input:
+                    parts = ing_input.split(maxsplit=2)
+                    if len(parts) >= 3:
+                        try:
+                            amount = float(parts[0])
+                        except ValueError:
+                            amount = parts[0]
+                        new_ingredients.append({"amount": amount, "unit": parts[1], "item": parts[2]})
+                    else:
+                        new_ingredients.append({"amount": "", "unit": "", "item": ing_input})
+        else:
+            new_ingredients = recipe.ingredients
+
+        # Ask about instructions
+        print(f"\nCurrent instructions: {len(recipe.instructions)} steps")
+        edit_inst = input("Edit instructions? (y/n): ").strip().lower()
+
+        if edit_inst == 'y':
+            print("\nEnter new instructions (one step per line)")
+            print("Type 'done' when finished.\n")
+            new_instructions = []
+            step_num = 1
+            while True:
+                step = input(f"Step {step_num}: ").strip()
+                if step.lower() == 'done':
+                    break
+                if step:
+                    new_instructions.append(step)
+                    step_num += 1
+        else:
+            new_instructions = recipe.instructions
+
+        # Create updated recipe
+        updated = Recipe(new_name, new_ingredients, new_instructions,
+                        new_prep, new_cook, new_servings, new_category)
+
+        if update_recipe(old_name, updated):
+            print(f"\nRecipe '{new_name}' updated successfully!")
+        else:
+            print("\nError updating recipe.")
+
+    except ValueError:
+        print("Invalid input.")
+
+
 def main():
     """Main application loop."""
     print("\n" + "=" * 50)
@@ -218,8 +311,9 @@ def main():
         print("4. Search recipes")
         print("5. Scale a recipe")
         print("6. Unit converter")
-        print("7. Delete a recipe")
-        print("8. Exit")
+        print("7. Edit a recipe")
+        print("8. Delete a recipe")
+        print("9. Exit")
 
         choice = input("\nChoice: ").strip()
 
@@ -237,12 +331,14 @@ def main():
         elif choice == "6":
             unit_converter_menu()
         elif choice == "7":
+            edit_recipe_menu()
+        elif choice == "8":
             name = get_input("Recipe name to delete: ")
             if delete_recipe(name):
                 print(f"Recipe '{name}' deleted.")
             else:
                 print(f"Recipe '{name}' not found.")
-        elif choice == "8":
+        elif choice == "9":
             print("\nGoodbye! Happy cooking!\n")
             break
         else:
