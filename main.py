@@ -1,7 +1,10 @@
 """Recipe Book - Main CLI interface."""
 
 from recipe import Recipe
-from storage import load_recipes, add_recipe, delete_recipe, save_recipes, update_recipe
+from storage import (
+    load_recipes, add_recipe, delete_recipe, save_recipes,
+    update_recipe, export_recipes, import_recipes
+)
 from search import (
     search_by_name,
     search_by_ingredient,
@@ -337,6 +340,65 @@ def shopping_list_menu():
     print(format_shopping_list(shopping))
 
 
+def export_menu():
+    """Export recipes to a file."""
+    recipes = load_recipes()
+    if not recipes:
+        print("No recipes to export!")
+        return
+
+    print("\n--- Export Recipes ---")
+    display_recipe_list(recipes)
+
+    print("\nEnter recipe numbers to export (comma-separated)")
+    print("Or press Enter to export all recipes")
+    selection = input("\nRecipes (Enter for all): ").strip()
+
+    # Get filename
+    filename = input("Export filename (default: my_recipes.json): ").strip()
+    if not filename:
+        filename = "my_recipes.json"
+    if not filename.endswith(".json"):
+        filename += ".json"
+
+    try:
+        if selection:
+            indices = [int(x.strip()) for x in selection.split(",")]
+            selected_names = []
+            for idx in indices:
+                if 0 < idx <= len(recipes):
+                    selected_names.append(recipes[idx - 1].name)
+            count = export_recipes(filename, selected_names)
+        else:
+            count = export_recipes(filename)
+
+        print(f"\nExported {count} recipe(s) to {filename}")
+    except Exception as e:
+        print(f"\nError exporting: {e}")
+
+
+def import_menu():
+    """Import recipes from a file."""
+    print("\n--- Import Recipes ---")
+
+    filename = input("Import filename: ").strip()
+    if not filename:
+        print("No filename provided.")
+        return
+
+    overwrite = input("Overwrite existing recipes with same name? (y/n): ").strip().lower() == 'y'
+
+    try:
+        imported, skipped = import_recipes(filename, overwrite)
+        print(f"\nImported {imported} recipe(s)")
+        if skipped:
+            print(f"Skipped {skipped} recipe(s) (already exist)")
+    except FileNotFoundError:
+        print(f"\nFile not found: {filename}")
+    except Exception as e:
+        print(f"\nError importing: {e}")
+
+
 def main():
     """Main application loop."""
     print("\n" + "=" * 50)
@@ -354,6 +416,8 @@ def main():
         print("7. Edit a recipe")
         print("8. Delete a recipe")
         print("9. Shopping list")
+        print("10. Export recipes")
+        print("11. Import recipes")
         print("0. Exit")
 
         choice = input("\nChoice: ").strip()
@@ -381,6 +445,10 @@ def main():
                 print(f"Recipe '{name}' not found.")
         elif choice == "9":
             shopping_list_menu()
+        elif choice == "10":
+            export_menu()
+        elif choice == "11":
+            import_menu()
         elif choice == "0":
             print("\nGoodbye! Happy cooking!\n")
             break

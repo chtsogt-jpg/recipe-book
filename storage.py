@@ -68,3 +68,72 @@ def get_recipe_by_name(name):
         if recipe.name.lower() == name.lower():
             return recipe
     return None
+
+
+def export_recipes(filepath, recipe_names=None):
+    """
+    Export recipes to a JSON file.
+
+    Args:
+        filepath: Path to export file
+        recipe_names: List of recipe names to export (None = all)
+
+    Returns:
+        Number of recipes exported
+    """
+    recipes = load_recipes()
+
+    if recipe_names:
+        names_lower = [n.lower() for n in recipe_names]
+        recipes = [r for r in recipes if r.name.lower() in names_lower]
+
+    data = [r.to_dict() for r in recipes]
+
+    with open(filepath, "w") as f:
+        json.dump(data, f, indent=2)
+
+    return len(recipes)
+
+
+def import_recipes(filepath, overwrite=False):
+    """
+    Import recipes from a JSON file.
+
+    Args:
+        filepath: Path to import file
+        overwrite: If True, replace existing recipes with same name
+
+    Returns:
+        Tuple of (imported_count, skipped_count)
+    """
+    if not os.path.exists(filepath):
+        raise FileNotFoundError(f"File not found: {filepath}")
+
+    with open(filepath, "r") as f:
+        data = json.load(f)
+
+    existing = load_recipes()
+    existing_names = {r.name.lower() for r in existing}
+
+    imported = 0
+    skipped = 0
+
+    for recipe_data in data:
+        recipe = Recipe.from_dict(recipe_data)
+        name_lower = recipe.name.lower()
+
+        if name_lower in existing_names:
+            if overwrite:
+                # Remove existing and add new
+                existing = [r for r in existing if r.name.lower() != name_lower]
+                existing.append(recipe)
+                imported += 1
+            else:
+                skipped += 1
+        else:
+            existing.append(recipe)
+            existing_names.add(name_lower)
+            imported += 1
+
+    save_recipes(existing)
+    return imported, skipped
