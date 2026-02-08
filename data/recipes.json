@@ -20,7 +20,8 @@
     "prep_time": 10,
     "cook_time": 15,
     "servings": 4,
-    "category": "breakfast"
+    "category": "breakfast",
+    "rating": 0
   },
   {
     "name": "Simple Tomato Pasta",
@@ -45,7 +46,8 @@
     "prep_time": 10,
     "cook_time": 25,
     "servings": 6,
-    "category": "dinner"
+    "category": "dinner",
+    "rating": 0
   },
   {
     "name": "Chocolate Chip Cookies",
@@ -74,6 +76,7 @@
     "prep_time": 15,
     "cook_time": 11,
     "servings": 48,
-    "category": "dessert"
+    "category": "dessert",
+    "rating": 0
   }
 ]
