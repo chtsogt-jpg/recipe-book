@@ -20,7 +20,8 @@
     "prep_time": 10,
     "cook_time": 15,
     "servings": 4,
-    "category": "breakfast"
+    "category": "breakfast",
+    "favorite": false
   },
   {
     "name": "Simple Tomato Pasta",
@@ -45,7 +46,8 @@
     "prep_time": 10,
     "cook_time": 25,
     "servings": 6,
-    "category": "dinner"
+    "category": "dinner",
+    "favorite": false
   },
   {
     "name": "Chocolate Chip Cookies",
@@ -61,7 +63,7 @@
       {"amount": 2, "unit": "cups", "item": "chocolate chips"}
     ],
     "instructions": [
-      "Preheat oven to 375°F (190°C).",
+      "Preheat oven to 375F (190C).",
       "Mix flour, baking soda, and salt in a bowl. Set aside.",
       "Beat butter and sugars until creamy.",
       "Add eggs and vanilla to butter mixture. Beat well.",
@@ -74,6 +76,7 @@
     "prep_time": 15,
     "cook_time": 11,
     "servings": 48,
-    "category": "dessert"
+    "category": "dessert",
+    "favorite": false
   }
 ]

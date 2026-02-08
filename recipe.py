@@ -4,7 +4,7 @@
 class Recipe:
     """Represents a single recipe."""
 
-    def __init__(self, name, ingredients, instructions, prep_time=0, cook_time=0, servings=1, category=""):
+    def __init__(self, name, ingredients, instructions, prep_time=0, cook_time=0, servings=1, category="", favorite=False):
         """
         Create a new recipe.
 
@@ -16,6 +16,7 @@ class Recipe:
             cook_time: Cooking time in minutes
             servings: Number of servings
             category: Recipe category (e.g., "breakfast", "dinner", "dessert")
+            favorite: Whether this recipe is marked as a favorite
         """
         self.name = name
         self.ingredients = ingredients
@@ -24,6 +25,7 @@ class Recipe:
         self.cook_time = cook_time
         self.servings = servings
         self.category = category
+        self.favorite = favorite
 
     def total_time(self):
         """Return total time (prep + cook) in minutes."""
@@ -38,7 +40,8 @@ class Recipe:
             "prep_time": self.prep_time,
             "cook_time": self.cook_time,
             "servings": self.servings,
-            "category": self.category
+            "category": self.category,
+            "favorite": self.favorite
         }
 
     @classmethod
@@ -51,5 +54,6 @@ class Recipe:
             prep_time=data.get("prep_time", 0),
             cook_time=data.get("cook_time", 0),
             servings=data.get("servings", 1),
-            category=data.get("category", "")
+            category=data.get("category", ""),
+            favorite=data.get("favorite", False)
         )
