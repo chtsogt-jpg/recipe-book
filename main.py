@@ -25,6 +25,7 @@ def display_recipe(recipe):
     if recipe.category:
         print(f"Category: {recipe.category}")
 
+    print(f"Rating: {recipe.get_rating_display()}")
     print(f"Prep: {recipe.prep_time} min | Cook: {recipe.cook_time} min | Total: {recipe.total_time()} min")
     print(f"Servings: {recipe.servings}")
 
@@ -51,7 +52,8 @@ def display_recipe_list(recipes):
     print(f"\nFound {len(recipes)} recipe(s):")
     for i, r in enumerate(recipes, 1):
         time_str = f"({r.total_time()} min)" if r.total_time() > 0 else ""
-        print(f"  {i}. {r.name} {time_str}")
+        rating_str = f"{'*' * r.rating}" if r.rating > 0 else ""
+        print(f"  {i}. {r.name} {rating_str} {time_str}")
 
 
 def get_input(prompt, required=True):
@@ -124,7 +126,8 @@ def search_menu():
         print("2. Search by ingredient")
         print("3. Search by category")
         print("4. Search by max time")
-        print("5. Back to main menu")
+        print("5. View top rated")
+        print("6. Back to main menu")
 
         choice = input("\nChoice: ").strip()
 
@@ -151,6 +154,8 @@ def search_menu():
             except ValueError:
                 print("Please enter a valid number.")
         elif choice == "5":
+            view_top_rated()
+        elif choice == "6":
             break
 
 
@@ -399,6 +404,65 @@ def import_menu():
         print(f"\nError importing: {e}")
 
 
+def rate_recipe_menu():
+    """Rate a recipe."""
+    recipes = load_recipes()
+    if not recipes:
+        print("No recipes in the book yet!")
+        return
+
+    display_recipe_list(recipes)
+
+    try:
+        choice = int(get_input("\nEnter recipe number to rate (0 to cancel): "))
+        if choice == 0:
+            return
+        if not (0 < choice <= len(recipes)):
+            print("Invalid choice.")
+            return
+
+        recipe = recipes[choice - 1]
+        print(f"\nRating: {recipe.name}")
+        print(f"Current rating: {recipe.get_rating_display()}")
+        print("\nEnter new rating (1-5 stars, or 0 to clear):")
+
+        rating = int(get_input("Rating: "))
+        if not (0 <= rating <= 5):
+            print("Rating must be between 0 and 5.")
+            return
+
+        recipe.rating = rating
+        if update_recipe(recipe.name, recipe):
+            if rating == 0:
+                print(f"\nRating cleared for '{recipe.name}'")
+            else:
+                print(f"\nRated '{recipe.name}' with {'*' * rating}")
+        else:
+            print("\nError updating recipe.")
+
+    except ValueError:
+        print("Invalid input.")
+
+
+def view_top_rated():
+    """View top-rated recipes."""
+    recipes = load_recipes()
+    if not recipes:
+        print("No recipes in the book yet!")
+        return
+
+    # Filter and sort by rating
+    rated = [r for r in recipes if r.rating > 0]
+    if not rated:
+        print("\nNo recipes have been rated yet.")
+        return
+
+    rated.sort(key=lambda r: r.rating, reverse=True)
+    print("\n--- Top Rated Recipes ---")
+    for i, r in enumerate(rated, 1):
+        print(f"  {i}. {r.name} {'*' * r.rating} ({r.total_time()} min)")
+
+
 def main():
     """Main application loop."""
     print("\n" + "=" * 50)
@@ -418,6 +482,7 @@ def main():
         print("9. Shopping list")
         print("10. Export recipes")
         print("11. Import recipes")
+        print("12. Rate a recipe")
         print("0. Exit")
 
         choice = input("\nChoice: ").strip()
@@ -449,6 +514,8 @@ def main():
             export_menu()
         elif choice == "11":
             import_menu()
+        elif choice == "12":
+            rate_recipe_menu()
         elif choice == "0":
             print("\nGoodbye! Happy cooking!\n")
             break
