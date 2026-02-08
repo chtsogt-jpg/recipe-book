@@ -19,7 +19,8 @@ from shopping import generate_shopping_list, format_shopping_list
 def display_recipe(recipe):
     """Display a single recipe in a readable format."""
     print(f"\n{'=' * 50}")
-    print(f"  {recipe.name.upper()}")
+    fav_marker = " [FAVORITE]" if recipe.favorite else ""
+    print(f"  {recipe.name.upper()}{fav_marker}")
     print(f"{'=' * 50}")
 
     if recipe.category:
@@ -52,8 +53,9 @@ def display_recipe_list(recipes):
     print(f"\nFound {len(recipes)} recipe(s):")
     for i, r in enumerate(recipes, 1):
         time_str = f"({r.total_time()} min)" if r.total_time() > 0 else ""
+        fav_str = "<3" if r.favorite else ""
         rating_str = f"{'*' * r.rating}" if r.rating > 0 else ""
-        print(f"  {i}. {r.name} {rating_str} {time_str}")
+        print(f"  {i}. {fav_str} {r.name} {rating_str} {time_str}")
 
 
 def get_input(prompt, required=True):
@@ -127,7 +129,8 @@ def search_menu():
         print("3. Search by category")
         print("4. Search by max time")
         print("5. View top rated")
-        print("6. Back to main menu")
+        print("6. View favorites")
+        print("7. Back to main menu")
 
         choice = input("\nChoice: ").strip()
 
@@ -156,6 +159,8 @@ def search_menu():
         elif choice == "5":
             view_top_rated()
         elif choice == "6":
+            view_favorites()
+        elif choice == "7":
             break
 
 
@@ -444,6 +449,36 @@ def rate_recipe_menu():
         print("Invalid input.")
 
 
+def toggle_favorite_menu():
+    """Toggle favorite status for a recipe."""
+    recipes = load_recipes()
+    if not recipes:
+        print("No recipes in the book yet!")
+        return
+
+    display_recipe_list(recipes)
+
+    try:
+        choice = int(get_input("\nEnter recipe number to toggle favorite (0 to cancel): "))
+        if choice == 0:
+            return
+        if not (0 < choice <= len(recipes)):
+            print("Invalid choice.")
+            return
+
+        recipe = recipes[choice - 1]
+        recipe.favorite = not recipe.favorite
+
+        if update_recipe(recipe.name, recipe):
+            status = "added to" if recipe.favorite else "removed from"
+            print(f"\n'{recipe.name}' {status} favorites!")
+        else:
+            print("\nError updating recipe.")
+
+    except ValueError:
+        print("Invalid input.")
+
+
 def view_top_rated():
     """View top-rated recipes."""
     recipes = load_recipes()
@@ -461,6 +496,21 @@ def view_top_rated():
     print("\n--- Top Rated Recipes ---")
     for i, r in enumerate(rated, 1):
         print(f"  {i}. {r.name} {'*' * r.rating} ({r.total_time()} min)")
+
+
+def view_favorites():
+    """View all favorite recipes."""
+    recipes = load_recipes()
+    favorites = [r for r in recipes if r.favorite]
+
+    if not favorites:
+        print("\nNo favorite recipes yet. Use option 13 to add favorites!")
+        return
+
+    print("\n--- Your Favorite Recipes ---")
+    for i, r in enumerate(favorites, 1):
+        time_str = f"({r.total_time()} min)" if r.total_time() > 0 else ""
+        print(f"  {i}. <3 {r.name} {time_str}")
 
 
 def main():
@@ -483,6 +533,7 @@ def main():
         print("10. Export recipes")
         print("11. Import recipes")
         print("12. Rate a recipe")
+        print("13. Toggle favorite")
         print("0. Exit")
 
         choice = input("\nChoice: ").strip()
@@ -516,6 +567,8 @@ def main():
             import_menu()
         elif choice == "12":
             rate_recipe_menu()
+        elif choice == "13":
+            toggle_favorite_menu()
         elif choice == "0":
             print("\nGoodbye! Happy cooking!\n")
             break
